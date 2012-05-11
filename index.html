@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>minesweeper</title>
+	<link rel="stylesheet" href="index.css" />
+</head>
+<body>	
+	<div id="main">
+		<h1>minesweeper</h1>
+		<div id="top">
+			<div id="message"></div>
+			<div id="nav">
+				<div id="timer">0</div>
+				<input type="button" id="reset" title="new game"></input>
+				<input type="button" id="cheat" title="cheat"></input>
+				<div id="clicks">0</div>
+			</div>
+		</div>
+			<div id="settings">
+				<div id="size">Size <input type="text" id="size" value="8"></input></div>
+				<div id="mines">Mines <input type="text" id="mines" value="10"></input></div>
+				<div id="density">(<span id="density">0</span>% density)</div>
+			</div>
+		<div id="board"></div>
+		<div id="save">
+			<div id="saveButton" title="save game"></div>
+			<div id="loadButton" title="load game" class="noload"></div>
+		</div>
+		<div id="instructions">
+			<h2>instructions</h2>
+			<ul id="instructions">
+				<li>change size and mine count</li>
+				<li>yellow smiley starts a new game</li>
+				<li>red smiley shows mines</li>
+				<li>left number is time in seconds</li>
+				<li>right number is number of clicks</li>
+			</ul>
+		</div>
+	</div>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<!--	<script src="jquery-1.7.2.min.js"></script>-->
+	<script src="script.js"></script>
+</body>
+</html>

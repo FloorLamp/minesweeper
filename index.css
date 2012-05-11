@@ -1,0 +1,195 @@
+body {
+	background-color: #9fb;
+	color: #333;
+	font-family: helvetica;
+}
+h1 {
+	margin: 10px 0 15px;
+	text-align: center;
+}
+h2 {
+	text-align: center;
+	margin: 10px;
+	padding: 0;
+	font-size: 1em;
+}
+ul {
+	list-style-type: none;
+}
+ul#instructions {
+	margin: 10px auto;
+	width: 250px;
+}
+div#main {
+}
+div#top {
+	width: 250px;
+	margin: 5px auto;
+	text-align: center;
+}
+div#nav {
+	margin: 0;
+	padding: 0;
+}
+div#nav div {
+	display: inline-block;
+	width: 70px;
+	font-size: 2em;
+}
+div#timer {
+	float: left;
+}
+div#clicks {
+	float: right;
+}
+input#reset {
+    background-image: url("media/smile.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 30px auto;
+    border: 1px solid black;
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+}
+input#reset:active {
+    background-image: url("media/smile2.png");
+    outline: 0 none;
+}
+input#cheat {
+    background-image: url("media/evil.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 30px auto;
+    border: 1px solid black;
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+}
+div#message {
+	font-size: 1.25em;
+	font-weight: bold;
+	height: 1.25em;
+	margin: 10px;
+	text-align: center;	
+}
+div#message.notice {
+	color: #33f;
+}
+div#message.winMessage {
+	color: #0a0;
+}
+div#message.loseMessage {
+	color: #c00;
+}
+div#message.error {
+	color: #c00;
+	font-size: 1em;
+	margin-bottom: 15px;
+}
+div#settings {
+	margin: 5px auto;
+	text-align: center;
+}
+div#settings div {
+	display: inline;
+	font-weight: bold;
+	font-size: 1em;
+}
+div#settings input {
+	width: 40px;
+	border: 0 none;
+	padding: 2px 0;
+	margin-left: 5px;
+	text-align: center;
+	background-color: #9fb;
+	font-size: 1em;
+}
+div#settings input:hover, div#settings input:focus {
+	background-color: #fff;
+}
+div#board {
+	clear: both;
+	width: 200px;
+	height: 200px;
+	margin: 0 auto;
+	padding: 0;
+	border: 2px solid black;
+	background-color: #aaa;
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+}
+div.cell {
+	margin: 0;
+	padding: 0;
+	width: 23px;
+	height: 23px;
+	line-height: 23px;
+	float: left;
+	border: 1px solid black;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+}
+div.clickable {
+	background-color: #aaa;
+	cursor: pointer;
+}
+div.clicked {
+	background-color: #ccc;
+}
+div.cleared {
+	background-color: #0a0;
+}
+div.nearx {
+	background-color: red;
+	color: black;
+}
+div.near1 {
+	color: blue;
+}
+div.near2 {
+	color: green;
+}
+div.near3 {
+	color: #f50;
+}
+div.near4 {
+	color: #c00;
+}
+div.near5 {
+	color: #909;
+}
+div.near6 {
+	color: #088;
+}
+div.near7 {
+	color: #553;
+}
+div.near8 {
+	color: black;
+}
+div#save {
+	width: 84px;
+	height: 32px;
+	margin: 10px auto;
+}
+div#save div{
+	background-repeat: no-repeat;
+	width: 32px;
+	height: 32px;
+	margin: 0 5px;
+	float: left;
+	cursor: pointer;
+}
+div#saveButton {
+	background-image: url("media/_active__save.png");
+}
+div#loadButton {
+	background-image: url("media/_active__open.png");
+}
+div#loadButton.noload {
+	background-image: url("media/_disabled__open.png");
+	cursor: default;
+}
