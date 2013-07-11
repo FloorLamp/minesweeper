@@ -2,25 +2,32 @@
 	var WIN_MESSAGE = 'victory',
 		LOSE_MESSAGE = 'defeat',
 		STORAGE_NAME = 'minesweeper',
-		CHUNK_SIZE = 256,
 		SIZE,
 		MINES,
 		TOTALCELLS,
-		cells = [],
-		minecells = [],
+        
+		clickablecells = [], // cells that can be clicked
+		clickedcells = [], // cells that have been clicked
+		cells = [], // values of all cells
+		minecells = [], // locations of mines
 		timerId,
 		isTimerSet = false,
 		time = 0,
 		clicks = 0,
-		sizeInput = $('input#size'),
-		minesInput = $('input#mines'),
-		density = $('span#density'),
-		board = $('div#board'),
-		messageDiv = $('div#message'),
-		errorDiv = $('div#message'),
-		timerDiv = $('div#timer'),
-		clicksDiv = $('div#clicks'),
-		loadButton = $('div#loadButton');
+        
+		sizeInput = $('#size-input'),
+		minesInput = $('#mines-input'),
+		density = $('#density-display'),
+		boardDiv = $('#board'),
+		messageDiv = $('#message'),
+		timerDiv = $('#timer'),
+		clicksDiv = $('#clicks'),
+		loadButton = $('#loadButton');
+		
+	// Helper function to get id from element
+	function getId(cell) {
+		return parseInt(cell.attr('id'), 10);
+	}
 		
 	// Validate and get inputs
 	function getInputs() {
@@ -43,13 +50,13 @@
 		} else if (minesint >= sizeint*sizeint) {
 			errorText = 'too many mines';
 		} else {
-			errorDiv.html('');
+			messageDiv.html('');
 			SIZE = sizeint;
 			TOTALCELLS = SIZE*SIZE;
 			MINES = minesint;
 			return true;
 		}
-		errorDiv.addClass('error').text(errorText);
+		messageDiv.addClass('error').text(errorText);
 	}
 	
 	// Creates board with cells and initializes cells array
@@ -70,12 +77,11 @@
 	
 		// Resize board and add cells
 		var dimension = SIZE * 25 + 'px';
-		board.html('').css('width', dimension).css('height', dimension);
+		boardDiv.html('').css('width', dimension).css('height', dimension);
 		for (var x = 0; x < TOTALCELLS; x++) {
-			board.append(
-				'<div class="cell clickable" id="' + x + '">' +
-				'</div>'
-			);
+			boardDiv.append('<div class="cell clickable" id="' + x + '"></div>');
+			
+			clickablecells.push(x);
 			
 			if (!fromLoad) {
 				// Calculate nearby mines
@@ -96,9 +102,9 @@
 					cells[x] = surrounding;
 				}
 			} else { // If loading game, fill in board
-				var c = $('div#' + x);
+				var c = $('#' + x);
 				if (loadedBoard[x] == 'c') {
-					showCell(c, cells[x], condition == 'w');
+					showCell(x, c, cells[x], condition == 'w');
 				} else {
 					c.html(loadedBoard[x]);
 				}
@@ -106,9 +112,9 @@
 		}	
 	}
 	
-	// Binds click handlers
+	// Binds click handlers for cells
 	function bindCells() {
-		$('div.clickable').on('mousedown', function(e) {
+		$('.clickable').on('mousedown', function(e) {
 			var clicked = $(this);
 			if (clicked.hasClass('clickable')) {
 				startTimer();
@@ -117,36 +123,28 @@
 					clicks++;
 					clicksDiv.html(clicks);
 				
-					var id = parseInt(clicked.attr('id'), 10),
-						surrounding = cells[id];
+					var cellid = getId(clicked),
+						value = cells[cellid];
 				
-					clicked.removeClass('clickable').addClass('clicked');
-					if (surrounding == 0) {
-						clicked.html('');
-						
-						// Reveals neighboring cells if a 0 is clicked
-						$.each(findNeighboringZeroes(id), function(i, val) {
-							var toShow = $('div#' + val),
-								toShowSurrounding = cells[val];
-							
-							showCell(toShow, toShowSurrounding);
+					showCell(cellid, clicked, value);
+					if (value == 0) { // If 0, reveals neighboring cells
+						$.each(findNeighboringZeroes(cellid), function(i, loc) {
+							showCell(loc, $('#' + loc), cells[loc]);
 						});
-					} else if (surrounding == 'x') {
-						clicked.html(surrounding).addClass('near' + surrounding);
+					} else if (value == 'x') { // If mine, ends game
 						lose();
 						return;
-					} else {
-						clicked.html(surrounding).addClass('near' + surrounding);
 					}
 					
 					// Validates on every successful click
 					validate();
 				} else { // On right click, flag cell
-					if (clicked.text() != 'o' && clicked.text() != '?') {
+					var clickedText = clicked.text();
+					if (clickedText != 'o' && clickedText != '?') {
 						clicked.html('o');
-					} else if (clicked.text() == 'o') {
+					} else if (clickedText == 'o') {
 						clicked.html('?');
-					} else if (clicked.text() == '?') {
+					} else if (clickedText == '?') {
 						clicked.html('');
 					}
 				}
@@ -156,7 +154,8 @@
 		});
 	}
 	
-	function showCell(cell, value, isWin) {
+	// Reveals the cell with id cellid
+	function showCell(cellid, cell, value, isWin) {
 		if (cell.hasClass('clickable')) {
 			cell.removeClass('clickable').addClass('clicked').html('');
 			
@@ -167,6 +166,9 @@
 					cell.html(value).addClass('near' + value);
 				}
 			}
+			
+			clickedcells.push(cellid);
+			clickablecells.splice(clickablecells.indexOf(cellid), 1);
 		}
 	}
 	
@@ -229,11 +231,12 @@
 		stopTimer();
 						
 		// Reveal all cells
-		$('div.clickable').each(function() {
+		$('.clickable').each(function() {
 			var cell = $(this),
-				surrounding = cells[cell.attr('id')];
+				cellid = getId(cell),
+				surrounding = cells[cellid];
 			
-			showCell(cell, surrounding);
+			showCell(cellid, cell, surrounding);
 		});
 		
 		messageDiv.addClass('loseMessage').html(LOSE_MESSAGE);
@@ -241,14 +244,14 @@
 	
 	// Checks if all non-mines have been clicked, if so, wins game
 	function validate() {
-		var remaining = $('div.clickable');
-		if (remaining.length == MINES) {
+		if (clickablecells.length == MINES) {
 			stopTimer();
 			messageDiv.addClass('winMessage').html(WIN_MESSAGE);
 			
 			// Show mines
-			remaining.each(function() {
-				showCell($(this), 'x', true);
+			$('.clickable').each(function() {
+				var cell = $(this);
+				showCell(getId(cell), cell, 'x', true);
 			});
 		}
 	}
@@ -256,7 +259,7 @@
 	// Cheat function, displays all mines without ending game
 	function showmines() {
 		$.each(minecells, function(i, val) {
-			$('div#' + val).html('x');
+			$('#' + val).html('x');
 		});
 	}
 	
@@ -281,7 +284,7 @@
 	// Save game data to localStorage
 	function save() {
 		var date = new Date(),
-			all = $('div.cell'),
+			all = $('.cell'),
 			saveboard = [],
 			condition;
 		
@@ -297,14 +300,14 @@
 		}
 
 		var value = { 
-						size: SIZE, 
-						condition: condition, 
-						time: time, 
-						clicks: clicks, 
-						board: saveboard, 
-						cells: cells, 
-						minecells: minecells
-					};
+            size: SIZE,
+            condition: condition,
+            time: time,
+            clicks: clicks,
+            board: saveboard,
+            cells: cells,
+            minecells: minecells
+        };
 		
 		localStorage.setItem(STORAGE_NAME, JSON.stringify(value));
 		loadButton.removeClass('noload');
@@ -328,7 +331,7 @@
 	function newGame(fromLoad, loadedBoard, condition) {
 		if (fromLoad || getInputs()) {
 			var fadeTime = 'fast';
-			$('div#board').animate({opacity: '0'}, fadeTime, function() {
+			boardDiv.animate({opacity: '0'}, fadeTime, function() {
 				// If new game, reset everything
 				if (!fromLoad) {
 					cells = [];
@@ -336,6 +339,9 @@
 					clicks = 0;
 					time = 0;
 				}
+				
+				clickablecells = [];
+				clickedcells = [];
 			
 				sizeInput.val(SIZE);
 				minesInput.val(MINES);
@@ -355,28 +361,139 @@
 		}
 	}
 	
+	// Attempts to solve the board
+	function solve() {
+//		var stepId = setInterval(function() {
+//			solvealgo();			
+//			
+//			if (clickablecells.length == 0) {
+//				clearInterval(stepId);
+//			}
+//		}, 1000);
+			
+		function clickRandom(cells) {
+			var rand = Math.floor(Math.random()*cells.length);
+			$(cells[rand]).trigger({ type: 'mousedown', which: 1});
+		}
+		
+		function clickCell(cellid) {
+			$('#' + cellid).trigger({ type: 'mousedown', which: 1});
+		}
+		
+		function flagCell(cellid) {
+			var cell = $('#' + cellid);
+			
+			if (cell.text().length == 0) {
+				cell.trigger({ type: 'mousedown', which: 3});
+			}
+		}
+		
+		var added = [],
+			ones = [], // Array of cells with value 1
+			foundmines = [],
+			solvedmines = []; // Completed cells
+		
+		solvealgo();
+		function solvealgo() {
+			if (ones.length <= 1) {
+				clickRandom($('.clickable'));
+			}
+			
+			for (var i = 0; i < clickedcells.length; i++) {
+				var cellId = clickedcells[i],
+					cellValue = cells[cellId];
+				
+				if (added.indexOf(cellId) < 0) {
+					if (cellValue == 1) {
+						ones.push(cellId);
+						added.push(cellId);
+					}
+				}
+			}
+			
+			for (var i = 0; i < ones.length; i++) {
+				var mineNearby = searchNearby(ones[i], 1, 'mine');
+				if (mineNearby != null) {
+					console.log('mine' + ' search near ' + ones[i] + ', found ' + mineNearby);
+					foundmines.push(mineNearby);
+					flagCell(mineNearby);
+				}
+			}
+			
+			for (var i = 0; i < foundmines.length; i++) {
+				var oneNearby = searchNearby(foundmines[i], 1, 'val');
+				console.log('val' + ' search near ' + foundmines[i] + ', found ' + oneNearby);
+				for (var m = 0; m < mineNearby.length; m++) {
+//					clickCell(mineNearby[m]);
+				}
+			}
+			
+			function searchNearby(id, num, type) {
+				var searchForUnclicked = 'mine',
+					searchForValue = 'val',
+					lookingfor = 'clickable',
+					found = [],
+					nw = id - SIZE - 1, nwcell = $('#' + nw),
+					n = id - SIZE, ncell = $('#' + n),
+					ne = id - SIZE + 1, necell = $('#' + ne),
+					w = id - 1, wcell = $('#' + w),
+					e = id + 1, ecell = $('#' + e),
+					sw = id + SIZE - 1, swcell = $('#' + sw),
+					s = id + SIZE, scell = $('#' + s),
+					se = id + SIZE + 1, secell = $('#' + se);
+				
+				if (id % SIZE > 0) { // west
+					if (type == searchForUnclicked && nwcell.hasClass(lookingfor) ||
+						type == searchForValue && nwcell.text() == num) found.push(nw);
+					if (type == searchForUnclicked && wcell.hasClass(lookingfor) ||
+						type == searchForValue && wcell.text() == num) found.push(w);
+					if (type == searchForUnclicked && swcell.hasClass(lookingfor) ||
+						type == searchForValue && swcell.text() == num) found.push(sw);
+				} 
+				if (id % SIZE < SIZE - 1) { // east
+					if (type == searchForUnclicked && necell.hasClass(lookingfor) ||
+						type == searchForValue && necell.text() == num) found.push(ne);
+					if (type == searchForUnclicked && ecell.hasClass(lookingfor) ||
+						type == searchForValue && ecell.text() == num) found.push(e);
+					if (type == searchForUnclicked && secell.hasClass(lookingfor) ||
+						type == searchForValue && secell.text() == num) found.push(se);
+				}
+				if (type == searchForUnclicked && ncell.hasClass(lookingfor) ||
+						type == searchForValue && ncell.text() == num) found.push(n);
+				if (type == searchForUnclicked && scell.hasClass(lookingfor) ||
+						type == searchForValue && scell.text() == num) found.push(s);
+				
+				return (type == searchForUnclicked && found.length == num ||
+						type == searchForValue) ? found : null;
+			}
+		}
+	}
+	
 	// One time event binding
 	function bind() {
-		$('input#validate').on('click', function() {
+		$('#validate').on('click', function() {
 			validate();
 		});
 		
-		$('input#cheat').on('click', function() {
+		$('#cheat').on('click', function() {
 			showmines();
 		});
 	
-		$('input#reset').on('click', function() {
+		$('#reset').on('click', function() {
 			newGame();
 		});
 		
-		$('div#saveButton').on('click', function() {
+		$('#saveButton').on('click', function() {
 			save();
 		});
 		
 		loadButton.on('click', function() {
-			if (!$(this).hasClass('noload'))
-				load();
+			if (!$(this).hasClass('noload')) load();
 		});
+		
+		//$('#solve').on('click', function() {
+		//	solve();
+		//});
 	}
 	
 	function init() {
@@ -386,9 +503,9 @@
 		}
 		
 		newGame();
+        bind();
 	}
 	
 	init();
-	bind();
 })();
 

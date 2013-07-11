@@ -10,6 +10,7 @@
 		<h1>minesweeper</h1>
 		<div id="top">
 			<div id="message"></div>
+			<!--<input type="button" id="solve" value="solve"></input>-->
 			<div id="nav">
 				<div id="timer">0</div>
 				<input type="button" id="reset" title="new game"></input>
@@ -18,9 +19,9 @@
 			</div>
 		</div>
 			<div id="settings">
-				<div id="size">Size <input type="text" id="size" value="8"></input></div>
-				<div id="mines">Mines <input type="text" id="mines" value="10"></input></div>
-				<div id="density">(<span id="density">0</span>% density)</div>
+				<div id="size">Size <input type="text" id="size-input" value="8"></input></div>
+				<div id="mines">Mines <input type="text" id="mines-input" value="10"></input></div>
+				<div id="density">(<span id="density-display">0</span>% density)</div>
 			</div>
 		<div id="board"></div>
 		<div id="save">
@@ -29,18 +30,19 @@
 		</div>
 		<div id="instructions">
 			<h2>instructions</h2>
-			<ul id="instructions">
+			<ul id="instructions-list">
 				<li>change size and mine count</li>
 				<li>yellow smiley starts a new game</li>
 				<li>red smiley shows mines</li>
 				<li>left number is time in seconds</li>
 				<li>right number is number of clicks</li>
+				<li>left click cell to reveal</li>
+				<li>right click cell to flag</li>
 			</ul>
 		</div>
 	</div>
 	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<!--	<script src="jquery-1.7.2.min.js"></script>-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="script.js"></script>
 </body>
 </html>

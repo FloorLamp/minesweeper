@@ -13,36 +13,34 @@ h2 {
 	padding: 0;
 	font-size: 1em;
 }
-ul {
+#instructions-list {
 	list-style-type: none;
-}
-ul#instructions {
 	margin: 10px auto;
 	width: 250px;
 }
-div#main {
+#main {
 }
-div#top {
+#top {
 	width: 250px;
 	margin: 5px auto;
 	text-align: center;
 }
-div#nav {
+#nav {
 	margin: 0;
 	padding: 0;
 }
-div#nav div {
+#nav div {
 	display: inline-block;
 	width: 70px;
 	font-size: 2em;
 }
-div#timer {
+#timer {
 	float: left;
 }
-div#clicks {
+#clicks {
 	float: right;
 }
-input#reset {
+#reset {
     background-image: url("media/smile.png");
     background-repeat: no-repeat;
     background-position: center center;
@@ -52,11 +50,11 @@ input#reset {
     height: 40px;
     width: 40px;
 }
-input#reset:active {
+#reset:active {
     background-image: url("media/smile2.png");
     outline: 0 none;
 }
-input#cheat {
+#cheat {
     background-image: url("media/evil.png");
     background-repeat: no-repeat;
     background-position: center center;
@@ -66,37 +64,37 @@ input#cheat {
     height: 40px;
     width: 40px;
 }
-div#message {
+#message {
 	font-size: 1.25em;
 	font-weight: bold;
 	height: 1.25em;
 	margin: 10px;
 	text-align: center;	
 }
-div#message.notice {
+#message.notice {
 	color: #33f;
 }
-div#message.winMessage {
+#message.winMessage {
 	color: #0a0;
 }
-div#message.loseMessage {
+#message.loseMessage {
 	color: #c00;
 }
-div#message.error {
+#message.error {
 	color: #c00;
 	font-size: 1em;
 	margin-bottom: 15px;
 }
-div#settings {
+#settings {
 	margin: 5px auto;
 	text-align: center;
 }
-div#settings div {
+#settings div {
 	display: inline;
 	font-weight: bold;
 	font-size: 1em;
 }
-div#settings input {
+#settings input {
 	width: 40px;
 	border: 0 none;
 	padding: 2px 0;
@@ -104,11 +102,13 @@ div#settings input {
 	text-align: center;
 	background-color: #9fb;
 	font-size: 1em;
+    transition: background .1s linear;
 }
-div#settings input:hover, div#settings input:focus {
+#settings input:hover, #settings input:focus {
 	background-color: #fff;
+    transition: background .1s linear;
 }
-div#board {
+#board {
 	clear: both;
 	width: 200px;
 	height: 200px;
@@ -120,7 +120,7 @@ div#board {
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 }
-div.cell {
+.cell {
 	margin: 0;
 	padding: 0;
 	width: 23px;
@@ -132,50 +132,53 @@ div.cell {
 	font-weight: bold;
 	text-align: center;
 }
-div.clickable {
+.clickable:hover {
+	background-color: #999;
+}
+.clickable {
 	background-color: #aaa;
 	cursor: pointer;
 }
-div.clicked {
+.clicked {
 	background-color: #ccc;
 }
-div.cleared {
+.cleared {
 	background-color: #0a0;
 }
-div.nearx {
+.nearx {
 	background-color: red;
 	color: black;
 }
-div.near1 {
+.near1 {
 	color: blue;
 }
-div.near2 {
+.near2 {
 	color: green;
 }
-div.near3 {
+.near3 {
 	color: #f50;
 }
-div.near4 {
+.near4 {
 	color: #c00;
 }
-div.near5 {
+.near5 {
 	color: #909;
 }
-div.near6 {
+.near6 {
 	color: #088;
 }
-div.near7 {
+.near7 {
 	color: #553;
 }
-div.near8 {
+.near8 {
 	color: black;
 }
-div#save {
+#save {
 	width: 84px;
 	height: 32px;
 	margin: 10px auto;
 }
-div#save div{
+#save div{
 	background-repeat: no-repeat;
 	width: 32px;
 	height: 32px;
@@ -183,13 +186,13 @@ div#save div{
 	float: left;
 	cursor: pointer;
 }
-div#saveButton {
+#saveButton {
 	background-image: url("media/_active__save.png");
 }
-div#loadButton {
+#loadButton {
 	background-image: url("media/_active__open.png");
 }
-div#loadButton.noload {
+#loadButton.noload {
 	background-image: url("media/_disabled__open.png");
 	cursor: default;
 }
